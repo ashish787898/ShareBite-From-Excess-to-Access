@@ -1,5 +1,6 @@
 # ShareBite-From-Excess-to-Access
 "ShareBite: A Smart Food Redistribution Platform to Combat Waste and Hunger"
+
 🧠 Project Overview: Food Share Platform
 You're building a web-based platform that connects hotels, restaurants, and individuals who have surplus food with NGOs, volunteers, or helpers who can collect and distribute that food to those in need. This system helps reduce food wastage and promotes food donation efficiency, especially in smart cities.
 
