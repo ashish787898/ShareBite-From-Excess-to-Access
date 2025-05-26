@@ -28,6 +28,18 @@ Volunteer tracking system
 Admin dashboard with statistics and reports
 
 Real-time notifications
+HOME PAGE
+![Screenshot 2025-05-26 104231](https://github.com/user-attachments/assets/806657f9-a583-45ea-94ee-585c315c35f7)
+![Screenshot 2025-05-26 105249](https://github.com/user-attachments/assets/3641cbb8-7cf5-4b9d-958d-484ff7181676)
+![Screenshot 2025-05-26 105506](https://github.com/user-attachments/assets/8cfbb32f-e637-49da-90f5-43a499d39d88)
+![Screenshot 2025-05-26 105531](https://github.com/user-attachments/assets/85aedfad-12c3-4895-8c55-08ee92794bfe)
+![Screenshot 2025-05-26 105613](https://github.com/user-attachments/assets/66f29162-f0e0-45de-8556-dabbf4b34d9e)
+![Screenshot 2025-05-26 105628](https://github.com/user-attachments/assets/9d4cc02f-2886-473a-be4e-016562cf1b8a)
+![Screenshot 2025-05-26 105640](https://github.com/user-attachments/assets/e7e14800-bb3d-4849-827a-05d7381aff7a)
+
+
+
+
 
 
 
