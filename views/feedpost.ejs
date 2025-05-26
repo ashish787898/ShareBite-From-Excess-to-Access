@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Food Share Platform</title>
+  <link rel="stylesheet" href="jj.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      padding: 30px;
+    }
+
+    button {
+      padding: 12px 25px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #aaa;
+    }
+
+    input, textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .posts-grid {
+      margin-top: 20px;
+    }
+
+    .post-card {
+      background-color: #f1f1f1;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🍱 Food Share</h1>
+    <p>Connecting hotels with helpers to reduce food waste</p>
+
+    <button onclick="openPostModal()">Post Food</button>
+    <button onclick="window.location.href='/posts'">View Posts</button>
+
+  </div>
+
+  <!-- Post Modal -->
+  <div id="postModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('postModal')">&times;</span>
+      <h1>Submit Food Donation</h1>
+      <form id="foodForm">
+        <label for="foodName">Food Name:</label>
+        <input type="text" id="foodName" name="foodName" required>
+
+        <label for="quantity">Quantity:</label>
+        <input type="text" id="quantity" name="quantity" required>
+
+        <label for="contact">Contact Info:</label>
+        <input type="text" id="contact" name="contact" required>
+
+        <label for="notes">Additional Notes:</label>
+        <textarea id="notes" name="notes"></textarea>
+
+        <button type="submit">Post</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Modal -->
+  <div id="viewModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('viewModal')">&times;</span>
+      <h2>View All Food Posts</h2>
+      <div id="viewPostsContainer" class="posts-grid"></div>
+    </div>
+  </div>
+
+  <div class="footer-image">
+    <img src="https://www.unicef.org/sites/default/files/styles/hero_extended/public/web-banner-food-we-share3.webp?itok=w9QWV-xj" alt="The Food We Share" style="width:100%; max-width:700px; margin: 40px auto; display:block;" />
+  </div>
+
+  <script>
+    function openPostModal() {
+      document.getElementById('postModal').style.display = 'block';
+      fetchAllPosts('postsContainer');
+    }
+
+    function openViewModal() {
+      document.getElementById('viewModal').style.display = 'block';
+      fetchAllPosts('viewPostsContainer');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      ['postModal', 'viewModal'].forEach(id => {
+        const modal = document.getElementById(id);
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    };
+
+    document.getElementById('foodForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const foodName = document.getElementById('foodName').value;
+      const quantity = document.getElementById('quantity').value;
+      const contact = document.getElementById('contact').value;
+      const notes = document.getElementById('notes').value;
+
+      try {
+        const response = await fetch('/api/posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ foodName, quantity, contact, notes })
+        });
+
+        const data = await response.json();
+        document.getElementById('responseMessage').innerText = data.message;
+
+        if (response.ok) {
+          document.getElementById('foodForm').reset();
+          fetchAllPosts('postsContainer');
+        }
+      } catch (err) {
+        console.error('Error posting food:', err);
+        document.getElementById('responseMessage').innerText = 'Error posting food';
+      }
+    });
+
+    async function fetchAllPosts(containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+
+      try {
+        const res = await fetch('/api/posts');
+        const posts = await res.json();
+
+        posts.forEach(post => {
+          const div = document.createElement('div');
+          div.className = 'post-card';
+          div.innerHTML = `
+            <h3>${post.foodName}</h3>
+            <p><strong>Quantity:</strong> ${post.quantity}</p>
+            <p><strong>Contact:</strong> ${post.contact}</p>
+            <p>${post.notes}</p>
+          `;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        container.innerHTML = '<p>Failed to load posts</p>';
+      }
+    }
+  </script>
+</body>
+</html>

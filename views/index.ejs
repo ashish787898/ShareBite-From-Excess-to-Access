@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login & Register | Colorful 3D UI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      perspective: 1000px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      padding: 2rem;
+      width: 100%;
+      max-width: 400px;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease-in-out;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) rotateY(0deg);
+      }
+      50% {
+        transform: translateY(-10px) rotateY(5deg);
+      }
+    }
+
+    .card h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #4caf50;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+    }
+
+    .input-group label {
+      margin-bottom: 0.3rem;
+      color: #555;
+    }
+
+    .input-group input {
+      padding: 0.7rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-group input:focus {
+      border-color: #4caf50;
+      box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.8rem;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #388e3c;
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 1rem;
+      cursor: pointer;
+      color: #4caf50;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+
+    .bg-shapes {
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .bg-shapes span {
+      position: absolute;
+      display: block;
+      background: linear-gradient(135deg, #81d4fa, #aed581);
+      border-radius: 50%;
+      animation: moveShapes 20s linear infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes moveShapes {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+      }
+    }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(0, 150, 136, 0.3);
+      pointer-events: none;
+      animation: ripple 1s linear;
+      z-index: 1000;
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(10);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .card {
+        padding: 1.5rem;
+      }
+      .btn {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-shapes" id="bg-shapes"></div>
+
+  <div class="container">
+    <div class="card" id="auth-card">
+      <h2 id="form-title">Create Account</h2>
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="you@example.com" />
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" />
+      </div>
+      <button class="btn" onclick="submitForm()">Create Account</button>
+      <div class="switch" onclick="toggleForm()">Already have an account? Log in</div>
+      <div class="message" id="message"></div>
+    </div>
+  </div>
+
+  <script>
+    // Background shapes generation
+    const bgShapes = document.getElementById('bg-shapes');
+    for (let i = 0; i < 15; i++) {
+      const span = document.createElement('span');
+      const size = 100 + Math.random() * 150;
+      span.style.width = span.style.height = `${size}px`;
+      span.style.left = `${Math.random() * 100}%`;
+      span.style.top = `${Math.random() * 100}%`;
+      span.style.animationDelay = `${Math.random() * 20}s`;
+      bgShapes.appendChild(span);
+    }
+
+    const BASE_URL = 'http://localhost:5000';
+    let isLogin = false;
+
+    function toggleForm() {
+      isLogin = !isLogin;
+      document.getElementById('form-title').innerText = isLogin ? 'Login' : 'Create Account';
+      document.querySelector('.btn').innerText = isLogin ? 'Log In' : 'Create Account';
+      document.querySelector('.switch').innerText = isLogin ? 'Don\'t have an account? Register' : 'Already have an account? Log in';
+      document.getElementById('message').textContent = '';
+    }
+
+   async function submitForm() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const message = document.getElementById('message');
+
+  if (!email || !password) {
+    message.textContent = 'Please enter email and password.';
+    message.style.color = 'orange';
+    return;
+  }
+
+  const endpoint = isLogin ? '/login' : '/register';
+
+  try {
+    const res = await fetch(`${BASE_URL}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    message.textContent = data.message || (isLogin ? 'Login successful' : 'Registered successfully');
+    message.style.color = res.ok ? 'green' : 'red';
+
+    if (res.ok && data.token) {
+      localStorage.setItem('token', data.token);
+      window.location.href = "/feedpost"; // Redirect to food.ejs via /food route
+    }
+  } catch (err) {
+    console.error(err);
+    message.textContent = 'Something went wrong. Check console for details.';
+    message.style.color = 'red';
+  }
+}
+
+
+    // Ripple effect on mouse move
+    document.body.addEventListener('mousemove', function (e) {
+      const ripple = document.createElement('div');
+      ripple.classList.add('ripple');
+      ripple.style.left = `${e.pageX}px`;
+      ripple.style.top = `${e.pageY}px`;
+      ripple.style.width = ripple.style.height = '20px';
+      document.body.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 1000);
+    });
+  </script>
+</body>
+</html>

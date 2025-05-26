@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Food Feed</title>
+  <link rel="stylesheet" href="/cc.css">
+</head>
+<body>
+  <header>
+    <h1>🍽️ Food Feed</h1>
+    <p>Discover delicious food posts shared by our community</p>
+    <div class="home-btn">
+      
+     <a href="/" class="btn home-btn">🏠 Home</a>
+    </div>
+  </header>
+
+  <main class="card-container" id="postContainer">
+    <% if (foods.length === 0) { %>
+      <p>No food posts yet.</p>
+    <% } else { %>
+      <% foods.forEach(food => { %>
+        <div class="card">
+          <h2><%= food.foodName %></h2>
+          <p><strong>Quantity:</strong> <%= food.quantity %></p>
+          <p><strong>Contact:</strong> <%= food.contact %></p>
+          <% if (food.notes) { %>
+            <p><strong>Notes:</strong> <%= food.notes %></p>
+          <% } %>
+          <p class="date"><%= new Date(food.createdAt).toLocaleString() %></p>
+          <div class="card-buttons">
+            <a class="btn whatsapp" href="https://wa.me/<%= food.contact %>" target="_blank">💬 WhatsApp</a>
+            <a class="btn call" href="tel:<%= food.contact %>">📞 Call</a>
+          </div>
+        </div>
+      <% }); %>
+    <% } %>
+  </main>
+
+  <script src="/cc.js"></script>
+</body>
+</html>
